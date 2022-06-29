@@ -97,11 +97,38 @@ export const useGameBoard = () => {
           generateNewTile();
           break;
         case "d":
-          const tilesAfterGoingRight: Tile[] = tiles.flatMap((a) => [
-            { ...a, position: [a.position[0], (a.position[1] = 3)] },
-          ]);
+          const firstRowTiles = tiles.filter((a) => a.position[1] === 0);
+          let newTiles: Tile[] = [];
+          //   const tilesAfterGoingRight: Tile[] = tiles.flatMap((tile) => {
+          let newTile: Tile | undefined;
 
-          setTiles(tilesAfterGoingRight);
+          firstRowTiles.forEach((fTile) => {
+            tiles.forEach((oldTile) => {
+              if (fTile.value === oldTile.value) {
+                newTile = {
+                  ...oldTile,
+                  position: oldTile.position,
+                  value: fTile.value + oldTile.value,
+                };
+              } else {
+                newTile = {
+                  ...oldTile,
+                  position: [oldTile.position[0], (oldTile.position[1] = 3)],
+                };
+              }
+            });
+
+            if (newTile) {
+              newTiles = [...tiles, newTile];
+            }
+          });
+          // return newTile ? [newTile] : [defaultTile];
+          // return [
+          //   { ...tile, position: [tile.position[0], (tile.position[1] = 3)] },
+          // ];
+          //   });
+
+          setTiles(newTiles);
           generateNewTile();
           break;
       }
