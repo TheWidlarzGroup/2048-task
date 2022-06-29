@@ -108,6 +108,12 @@ export const useGameBoard = () => {
     };
     window.addEventListener("keydown", handleKeyboardPress);
 
+    if (tiles.some((a) => a.value === 2048)) {
+      alert("Congratulations, You Won");
+    }
+    if (tiles.length === 16) {
+      alert("You lost, try again");
+    }
     return () => {
       window.removeEventListener("keydown", handleKeyboardPress);
     };
