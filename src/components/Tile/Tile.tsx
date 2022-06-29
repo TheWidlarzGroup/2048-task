@@ -2,7 +2,7 @@ import { TileContainer, TILE_HEIGHT } from "./Tile.styled";
 
 interface Props {
   value: number;
-  position: [number, number];
+  position: number[];
 }
 
 export const Tile = ({ value, position }: Props) => {

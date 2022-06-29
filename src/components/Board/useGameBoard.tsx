@@ -1,39 +1,73 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { generateID } from "../../utils/generateId";
 
 export interface Tile {
-  id: number;
+  id: string;
   value: number;
-  position: [number, number];
+  position: number[];
 }
+
+const emptyTiles = [
+  { top: 0, left: 0, value: 2 },
+  { top: 0, left: 1, value: 2 },
+  { top: 0, left: 2, value: 2 },
+  { top: 0, left: 3, value: 2 },
+  { top: 1, left: 0, value: 2 },
+  { top: 1, left: 1, value: 2 },
+  { top: 1, left: 2, value: 2 },
+  { top: 1, left: 3, value: 2 },
+  { top: 2, left: 0, value: 2 },
+  { top: 2, left: 1, value: 2 },
+  { top: 2, left: 2, value: 2 },
+  { top: 2, left: 3, value: 2 },
+  { top: 3, left: 0, value: 2 },
+  { top: 3, left: 1, value: 2 },
+  { top: 3, left: 2, value: 2 },
+  { top: 3, left: 3, value: 2 },
+];
 
 export const useGameBoard = () => {
   const [tiles, setTiles] = useState<Tile[]>([]);
 
   const generateInitialTiles = () => {
-    const getRandomPositions = () => {
-      const randomPositionInRange = Math.floor(Math.random() * 4);
-      const position: [number, number] = [
-        randomPositionInRange,
-        randomPositionInRange,
-      ];
+    const getRandomTile = () => {
+      const randomPositionIndex = Math.floor(Math.random() * emptyTiles.length);
+      const singleTile = emptyTiles[randomPositionIndex];
 
-      return position;
+      return {
+        id: generateID(),
+        position: [singleTile.top, singleTile.left],
+        value: singleTile.value,
+      };
     };
 
-    const firstRandomTile = {
-      id: 1,
-      value: 2,
-      position: getRandomPositions(),
-    };
-
-    const secondRandomTile = {
-      id: 2,
-      value: 2,
-      position: getRandomPositions(),
-    };
-
-    setTiles([firstRandomTile, secondRandomTile]);
+    setTiles([getRandomTile(), getRandomTile()]);
   };
+
+  const generateNewTile = useCallback(() => {
+    const randomPositionIndex = Math.floor(Math.random() * emptyTiles.length);
+
+    const emptyTilesCopy = emptyTiles.slice();
+    for (let i = 0; i < tiles.length; i++) {
+      const tile = tiles[i];
+      const indexOfTile = tiles.findIndex(
+        (a) => JSON.stringify(a.position) === JSON.stringify(tile.position)
+      );
+      emptyTilesCopy.slice(0, indexOfTile);
+    }
+
+    const randomTile = emptyTilesCopy[randomPositionIndex];
+
+    const newFreshTile = {
+      id: generateID(),
+      position: [randomTile.top, randomTile.left],
+      value: randomTile.value,
+    };
+
+    setTiles((prev) => {
+      return [...prev, newFreshTile];
+    });
+  }, [tiles]);
 
   useEffect(() => {
     const handleKeyboardPress = (e: KeyboardEvent) => {
@@ -44,7 +78,7 @@ export const useGameBoard = () => {
           ]);
 
           setTiles(tilesAfterGoingUp);
-
+          generateNewTile();
           break;
         case "s":
           const tilesAfterGoingDown: Tile[] = tiles.flatMap((a) => [
@@ -52,6 +86,7 @@ export const useGameBoard = () => {
           ]);
 
           setTiles(tilesAfterGoingDown);
+          generateNewTile();
           break;
         case "a":
           const tilesAfterGoingLeft: Tile[] = tiles.flatMap((a) => [
@@ -59,6 +94,7 @@ export const useGameBoard = () => {
           ]);
 
           setTiles(tilesAfterGoingLeft);
+          generateNewTile();
           break;
         case "d":
           const tilesAfterGoingRight: Tile[] = tiles.flatMap((a) => [
@@ -66,6 +102,7 @@ export const useGameBoard = () => {
           ]);
 
           setTiles(tilesAfterGoingRight);
+          generateNewTile();
           break;
       }
     };
@@ -74,6 +111,6 @@ export const useGameBoard = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyboardPress);
     };
-  }, [tiles]);
+  }, [generateNewTile, tiles]);
   return { tiles, generateInitialTiles };
 };
