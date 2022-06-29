@@ -15,18 +15,5 @@ export const Board = ({ tiles }: Props) => {
     />
   ));
 
-  return (
-    <BoardContainer>
-      {tilesList}
-
-      {/* <Tile value={2} position={[200, 400]} />
-      <Tile value={2} position={[200, 400]} />
-      <Tile value={2} position={[200, 400]} />
-      <Tile value={2} position={[200, 400]} />
-      <Tile value={2} position={[200, 400]} />
-      <Tile value={2} position={[200, 400]} />
-      <Tile value={2} position={[200, 400]} />
-      <Tile value={2} position={[200, 400]} /> */}
-    </BoardContainer>
-  );
+  return <BoardContainer>{tiles.length > 0 ? tilesList : null}</BoardContainer>;
 };
