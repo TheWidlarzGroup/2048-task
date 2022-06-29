@@ -1,25 +1,32 @@
-import { Tile } from "../Tile";
+import { Tile } from "../Tile/Tile";
 import { BoardContainer } from "./Board.styled";
+import type { Tile as TileType } from "./useGameBoard";
 
-export const Board = () => {
+interface Props {
+  tiles: TileType[];
+}
+
+export const Board = ({ tiles }: Props) => {
+  const tilesList = tiles.map((tile) => (
+    <Tile
+      key={`${tile.id}-singleTile`}
+      value={tile.value}
+      position={tile.position}
+    />
+  ));
+
   return (
     <BoardContainer>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
-      <Tile>2</Tile>
+      {tilesList}
+
+      {/* <Tile value={2} position={[200, 400]} />
+      <Tile value={2} position={[200, 400]} />
+      <Tile value={2} position={[200, 400]} />
+      <Tile value={2} position={[200, 400]} />
+      <Tile value={2} position={[200, 400]} />
+      <Tile value={2} position={[200, 400]} />
+      <Tile value={2} position={[200, 400]} />
+      <Tile value={2} position={[200, 400]} /> */}
     </BoardContainer>
   );
 };
